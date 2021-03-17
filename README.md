@@ -22,11 +22,13 @@ If project has been improved after submission, here is a good place to specify i
 <h2>Installation</h2>
 
 <h2>Contributing</h2>
+
 - Pantelis Dogoulis
 - Vasilis Tosounidis
 - Dimitris Tsiakmakis
 
 <h2>Project status</h2>
+
 Under active development.
 
 <h2>Credits</h2>
