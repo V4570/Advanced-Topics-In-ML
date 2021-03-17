@@ -1,4 +1,4 @@
-<h1 align="center">Advanced Topics in Machine Learning Group Projects</h1>
+<h1 align="center">Advanced Topics in Machine Learning Group Project</h1>
 <p align="center"><strong>Description</strong>
 <br>This repository is used for the projects developed for the purposes of the class "Advanced Topics in Machine Learning". The projects explore different ways of tackling some Machine Learning problems on real-life datasets.</p>
 <br/>
