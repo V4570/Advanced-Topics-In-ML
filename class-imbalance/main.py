@@ -1,4 +1,13 @@
-from .utils import load_dataset
+from data_preprocessing import preprocess_data
+from pathlib import Path
 
-employees = load_dataset("csv_name file")
-print(employees.shape)
+
+def main():
+	datapath = Path("data")
+	
+	preprocess_data(datapath / "aug_train.csv")
+
+
+if __name__ == '__main__':
+	main()
+
