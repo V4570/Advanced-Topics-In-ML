@@ -64,7 +64,7 @@ def preprocess_data(filepath):
 	x = pd.concat([df_num, df_cat], axis=1)
 	
 	# save to dataframe to file
-	# pd.concat([x, y], axis=1).to_csv('data/processed.csv')
+	pd.concat([x, y], axis=1).to_csv('data/processed.csv')
 	
 	return x, y
 
