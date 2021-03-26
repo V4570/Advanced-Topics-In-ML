@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 from sklearn.impute import KNNImputer
-from sklearn.preprocessing import RobustScaler
+from sklearn.preprocessing import MinMaxScaler
 
 
 def get_numeric_categorical_cols(df: pd.DataFrame):
@@ -28,10 +28,10 @@ def preprocess_data(filepath):
 	df_num_cols, df_cat_cols = get_numeric_categorical_cols(df)
 	
 	# normalize numeric columns
-	robust_scaler = RobustScaler()
+	scaler = MinMaxScaler()
 	df_num = df[df_num_cols].copy()
 	# create a dataframe from the normalized output and store it back to the variable
-	df_num = pd.DataFrame(robust_scaler.fit_transform(df_num), columns=df_num_cols)
+	df_num = pd.DataFrame(scaler.fit_transform(df_num), columns=df_num_cols)
 	
 	df_cat = df[df_cat_cols].copy()
 	# convert categorical to numeric
@@ -49,13 +49,14 @@ def preprocess_data(filepath):
 	df_cat.drop(missing_cat_cols, axis=1, inplace=True)
 	
 	# normalize the now numeric, categorical columns
-	missing_cat = robust_scaler.fit_transform(missing_cat)
+	missing_cat = pd.DataFrame(scaler.fit_transform(missing_cat), columns=missing_cat_cols)
+	missing_cat.fillna(method='backfill', inplace=True)
 	
 	# fill missing values
-	knn_imputer = KNNImputer(n_neighbors=3)
-	missing_cat_impute = knn_imputer.fit_transform(missing_cat)
+	# knn_imputer = KNNImputer(n_neighbors=3)
+	# missing_cat_impute = knn_imputer.fit_transform(missing_cat)
 	
-	missing_cat = pd.DataFrame(missing_cat_impute, columns=missing_cat_cols)
+	# missing_cat = pd.DataFrame(missing_cat_impute, columns=missing_cat_cols)
 	# concatenate categorical values
 	df_cat = pd.concat([df_cat, missing_cat], axis=1)
 	
@@ -63,7 +64,7 @@ def preprocess_data(filepath):
 	x = pd.concat([df_num, df_cat], axis=1)
 	
 	# save to dataframe to file
-	pd.concat([x, y], axis=1).to_csv('data/processed.csv')
+	# pd.concat([x, y], axis=1).to_csv('data/processed.csv')
 	
 	return x, y
 
