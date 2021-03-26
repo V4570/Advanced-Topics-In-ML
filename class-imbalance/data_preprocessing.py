@@ -34,14 +34,18 @@ def preprocess_data(filepath):
 	df_num = pd.DataFrame(robust_scaler.fit_transform(df_num), columns=df_num_cols)
 	
 	df_cat = df[df_cat_cols].copy()
+	# convert categorical to numeric
+	df_cat = df_cat.apply(lambda c: c.astype('category').cat.codes)
+	
+	# because when converting to categorical NaN gets mapped to -1 replace it with nan
+	# so that the imputer can work it's magic
+	df_cat.replace({-1: np.nan}, inplace=True)
 	# get the names of the columns that have at least one NaN value
 	missing_cat_cols = df_cat.columns[df_cat.isna().any()].tolist()
 	
-	# convert categorical to numeric
-	missing_cat = df_cat[missing_cat_cols].apply(lambda c: c.astype('category').cat.codes)
-	# because when converting to categorical NaN gets mapped to -1 replace it with nan
-	# so that the imputer can work it's magic
-	missing_cat.replace({-1: np.nan}, inplace=True)
+	# get only the columns with null values
+	missing_cat = df_cat[missing_cat_cols]
+	
 	df_cat.drop(missing_cat_cols, axis=1, inplace=True)
 	
 	# normalize the now numeric, categorical columns
