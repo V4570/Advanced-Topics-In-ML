@@ -50,7 +50,7 @@ def preprocess_data(filepath):
 	
 	# normalize the now numeric, categorical columns
 	missing_cat = pd.DataFrame(scaler.fit_transform(missing_cat), columns=missing_cat_cols)
-	missing_cat.fillna(method='backfill', inplace=True)
+	missing_cat = missing_cat.ffill(axis=1).bfill(axis=1)
 	
 	# fill missing values
 	# knn_imputer = KNNImputer(n_neighbors=3)
