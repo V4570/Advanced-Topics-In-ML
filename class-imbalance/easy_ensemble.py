@@ -9,14 +9,15 @@ from sklearn.metrics import precision_recall_curve, auc
 from matplotlib import pyplot
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, 
 
 #X, y = preprocess_data("./data/aug_train.csv")
 X, y = read_preprocessed("./data/processed.csv")
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
 
-pca = PCA(n_components=2, svd_solver='full')
-X_train = pca.fit_transform(X_train, y_train)
-X_test = pca.transform(X_test)
+scaler = MinMaxScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 
 #Set machine learning model
 adaboost = AdaBoostClassifier()
