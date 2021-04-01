@@ -7,20 +7,21 @@ from imblearn.ensemble import EasyEnsembleClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.metrics import precision_recall_curve, auc
 from matplotlib import pyplot
-from sklearn import svm
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import precision_recall_fscore_support
+from sklearn.decomposition import PCA
 
 #X, y = preprocess_data("./data/aug_train.csv")
 X, y = read_preprocessed("./data/processed.csv")
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+pca = PCA(n_components=2, svd_solver='full')
+X_train = pca.fit_transform(X_train, y_train)
+X_test = pca.transform(X_test)
 
 #Set machine learning model
-knn = KNeighborsClassifier(n_neighbors=2)
-svm = svm.SVC()
 adaboost = AdaBoostClassifier()
-model = EasyEnsembleClassifier(base_estimator=knn, n_estimators=1, sampling_strategy="majority", replacement=True, random_state=42, n_jobs=-1)
-model.fit(X_train, y_train) 
+model = EasyEnsembleClassifier(base_estimator=adaboost, n_estimators=10, sampling_strategy="majority", replacement=True, random_state=42, n_jobs=-1)
+model.fit(X_train, y_train)
 
 #y_test = 1 - y_test
 
