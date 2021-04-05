@@ -1,31 +1,21 @@
 from sklearn.cluster import KMeans
 from imblearn.over_sampling import KMeansSMOTE
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.metrics import silhouette_score, f1_score, precision_score, recall_score, accuracy_score
-from sklearn.decomposition import PCA
+from sklearn.metrics import f1_score, precision_recall_curve, precision_recall_fscore_support, auc
 from sklearn.model_selection import train_test_split
 from matplotlib import pyplot as plt
-import numpy as np
-import multiprocessing
 
 TESTING = False
 
 
-def cbs(x, y):
-	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=0)
-	
-	# split train set into train and validation for more unbiased data
-	# x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.25, random_state=0)
-	
-	pca = PCA(n_components=2)
-	x_train = pca.fit_transform(x_train, y_train)
-	x_test = pca.transform(x_test)
+def cbs(x, y, test_size, classifier):
+	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=0)
 	
 	if TESTING:
 		elbow(x_train, y_train)
+		return()
 	
 	kmeans_kwargs = {
-		"n_clusters": 3,
+		"n_clusters": 2,
 		"init": "random",
 		"n_init": 10,
 		"max_iter": 500,
@@ -39,21 +29,29 @@ def cbs(x, y):
 	
 	x_train, y_train = kmeans_smote.fit_resample(x_train, y_train)
 	
-	clf = AdaBoostClassifier()
+	clf = classifier
 	clf.fit(x_train, y_train)
 	
 	y_pred = clf.predict(x_test)
 	
-	acc = accuracy_score(y_test, y_pred)
-	recall = recall_score(y_test, y_pred, average='macro')
-	precision = precision_score(y_test, y_pred, average='macro')
-	f1 = f1_score(y_test, y_pred, average='macro')
+	# calculate scores
+	lr_probs = classifier.predict_proba(x_test)
+	lr_probs = lr_probs[:, 1]
+	lr_precision, lr_recall, _ = precision_recall_curve(y_test, lr_probs)
+	lr_f1, lr_auc = f1_score(y_test, y_pred, average='micro'), auc(lr_recall, lr_precision)
+	print('Cluster Based Sampling: f1 = %.2f%% auc = %.2f%%' % (lr_f1 * 100, lr_auc * 100))
+	prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='micro')
+	print('Cluster Based Sampling: precision = %.2f%% recall = %.2f%%' % (prec * 100, rec * 100))
+	no_skill = len(y_test[y_test == 0]) / len(y_test)
 	
-	print('------Scores------')
-	print("\tAccuracy: {:.3f}".format(acc))
-	print("\tPrecision: {:.3f}".format(precision))
-	print("\tRecall: {:.3f}".format(recall))
-	print("\tF1: {:.3f}".format(f1))
+	# Precision - Recall Curve Plot
+	plt.plot([0, 1], [no_skill, no_skill], linestyle='--', label='No Skill')
+	plt.plot(lr_recall, lr_precision, marker='.', label='Cluster Based Sampling')
+	plt.xlabel('Recall')
+	plt.ylabel('Precision')
+	plt.legend()
+	plt.title("Precision-Recall Curve")
+	plt.show()
 
 
 def elbow(x, y):

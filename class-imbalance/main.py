@@ -1,4 +1,9 @@
 from data_preprocessing import preprocess_data, read_preprocessed
+from easy_ensemble import easy_ensemble
+from smote_tomek import smote_tomek
+from no_sampling import no_sampling
+from cluster_based_sampling import cbs
+from sklearn.ensemble import AdaBoostClassifier
 from pathlib import Path
 
 PREPROCESS = False
@@ -12,7 +17,13 @@ def main():
 	else:
 		x, y = read_preprocessed(datapath / "processed.csv")
 	
-	print(x.shape, y.shape)
+	clf = AdaBoostClassifier()
+	test_size = 0.2
+	
+	no_sampling(x, y, test_size, clf)
+	easy_ensemble(x, y, test_size, clf)
+	smote_tomek(x, y, test_size, clf)
+	cbs(x, y, test_size, clf)
 
 
 if __name__ == '__main__':
