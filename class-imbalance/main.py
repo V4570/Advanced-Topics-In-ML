@@ -1,7 +1,7 @@
 from data_preprocessing import preprocess_data, read_preprocessed
 from easy_ensemble import easy_ensemble
 from smote_tomek import smote_tomek
-from no_sampling import no_sampling
+from no_sampling import no_sampling, only_majority_class
 from cluster_based_sampling import cbs
 from sklearn.ensemble import AdaBoostClassifier
 from pathlib import Path
@@ -20,6 +20,7 @@ def main():
 	clf = AdaBoostClassifier()
 	test_size = 0.2
 	
+	only_majority_class(x, y, test_size, clf)
 	no_sampling(x, y, test_size, clf)
 	easy_ensemble(x, y, test_size, clf)
 	smote_tomek(x, y, test_size, clf)
