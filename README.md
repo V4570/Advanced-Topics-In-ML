@@ -5,6 +5,8 @@
 <h2>About</h2>
 Context and progress go here
 
+Report link: <a href="https://docs.google.com/document/d/1cwMlSb4xJDBmbOXm6Vqsvi4nOQTNyBFjOq8l1NSev9s/">here</a>
+
 <h2>Goal and requirements</h2>
 
 The idea behind first implementation. What is expected, what should be included, what should not be included.
