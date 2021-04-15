@@ -20,35 +20,37 @@ def get_numeric_categorical_cols(df: pd.DataFrame):
 def preprocess_data(filepath):
 	df = pd.read_csv(filepath)
 
-	df = df.loc[:1000]
-	
 	cols = df.columns
 	for col in cols:
 		#find columns which nan values are more than threshold (10%)
 		nan_percentage = df[col].isnull().sum()/len(df.index)*100
-		if(nan_percentage > 0.1):
+		if(nan_percentage > 10):
 			print("name that droped: " + col + ", nan percentage of column is : " + str(nan_percentage))
 			df.drop(col, axis=1, inplace=True)
 
-	
-	#y data, DONE!
-	y = df['genre'].str.get_dummies(sep=",")
 
-	#drop columns
-	df.drop(['imdb_title_id', 'date_published', 'genre'], axis=1, inplace=True)
+	#drop columns which are irrelevant (original_title it's almost the same with title).
+	df.drop(['imdb_title_id', 'date_published', 'original_title'], axis=1, inplace=True)
+
 
 	nums, cats = get_numeric_categorical_cols(df)
-
 	print("total index[before dropna in categorical columns] " + str(len(df.index)))
 	df.dropna(subset=cats, inplace=True)
 	print("total index [after dropna in categorical columns]: " + str(len(df.index)))
-	
+
+	#y data, DONE!
+	y = df['genre'].str.get_dummies(sep=",")
+	df.drop(['genre'], axis=1, inplace=True)
+
+	#fill with mean value where is nan in 'reviews_from_users' feature
 	df['reviews_from_users'].fillna(df['reviews_from_users'].mean(), inplace=True)
 	#print(df.isna().any())
 	
+	nums, cats = get_numeric_categorical_cols(df)
 	df_cats = df[cats]
 	df.drop(cats, axis=1, inplace=True)
 
+	#numeric data, DONE!
 	scaler = MinMaxScaler()
 	numeric_matrix = scaler.fit_transform(df)
 
@@ -59,12 +61,10 @@ def preprocess_data(filepath):
 	nltk.download('stopwords')
 	nltk.download('punkt')	
 	nltk_stop_words = stopwords.words("english")
-	#tfidf_vectoriser = TfidfVectorizer(min_df=10, stop_words=nltk_stop_words,ngram_range=(2,2))
 	tfidf_vectoriser = TfidfVectorizer(min_df=10, stop_words=nltk_stop_words,ngram_range=(2,2))
-	
 	#description data, DONE!
 	x_t = tfidf_vectoriser.fit_transform(df_description).todense()
-	n_components = 5
+	n_components = 1200
 	pca = PCA(n_components=n_components)
 	description_matrix = pca.fit_transform(x_t)
 	print(f"Explained variance for n components: {pca.explained_variance_ratio_[:n_components].sum():.4f}")
@@ -72,13 +72,10 @@ def preprocess_data(filepath):
 	#categories to codes.
 	df_cats = df_cats.apply(lambda c: c.astype('category').cat.codes)
 	
-	#x = pd.concat([df, df_cats, pd.DataFrame.from_records(description_matrix)], axis=1)#pd.DataFrame(description_matrix, columns = ['description'], index=)], axis=1)
-	x = np.concatenate((df.to_numpy(), df_cats.to_numpy(), description_matrix), axis=1)
+	x = np.concatenate((numeric_matrix, df_cats.to_numpy(), description_matrix), axis=1)
 	
-	df.to_csv('data/processed.csv')
-	
-	return df.to_numpy()
-
+	np.savetxt("./data/processed.csv", x, delimiter=",")
+	return x, y
 
 def read_preprocessed(filepath):
 	df = pd.read_csv(filepath)
