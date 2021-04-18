@@ -3,7 +3,7 @@ import numpy as np
 from nltk.corpus import stopwords
 import nltk
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
 from sklearn.decomposition import PCA
 
 def get_numeric_categorical_cols(df: pd.DataFrame):
@@ -16,11 +16,10 @@ def get_numeric_categorical_cols(df: pd.DataFrame):
 	numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 	return df.select_dtypes(include=numerics).columns, df.select_dtypes(include=object).columns
 
-
 def preprocess_data(filepath):
 	df = pd.read_csv(filepath)
 
-	#df = df.loc[:20000]
+	#df = df.loc[:10000]
 
 	cols = df.columns
 	for col in cols:
@@ -60,28 +59,33 @@ def preprocess_data(filepath):
 	df_description = df_cats['description']
 	df_cats.drop(['description'], axis=1, inplace=True)
 
-	nltk.download('stopwords')
-	nltk.download('punkt')	
-	nltk_stop_words = stopwords.words("english")
-	tfidf_vectoriser = TfidfVectorizer(min_df=10, stop_words=nltk_stop_words,ngram_range=(2,2))
-	#description data, DONE!
-	x_t = tfidf_vectoriser.fit_transform(df_description).todense()
-	n_components = 1800
-	pca = PCA(n_components=n_components)
-	df_description_feature_names = []
-	for i in range(n_components):
-		df_description_feature_names.append("description_"+str(i))
-	df_description_new = pd.DataFrame(pca.fit_transform(x_t), columns=df_description_feature_names)
-	print(f"Explained variance for n components: {pca.explained_variance_ratio_[:n_components].sum():.4f}")
+	# nltk.download('stopwords')
+	# nltk.download('punkt')	
+	# nltk_stop_words = stopwords.words("english")
+	
+	# n_components = 25
+	# tfidf_vectoriser = HashingVectorizer(n_features=n_components, stop_words=nltk_stop_words)
+	# #tfidf_vectoriser = CountVectorizer(min_df=5, stop_words=nltk_stop_words,ngram_range=(2,2))
+	# #tfidf_vectoriser = TfidfVectorizer(min_df=10, stop_words=nltk_stop_words,ngram_range=(2,2))
+	# # #description data, DONE!
+	# x_t = tfidf_vectoriser.fit_transform(df_description).todense()
+	# pca = PCA(n_components=n_components)
+	# df_description_feature_names = []
+	# for i in range(n_components):
+	# 	df_description_feature_names.append("description_"+str(i))
+	# df_description_new = pd.DataFrame(pca.fit_transform(x_t), columns=df_description_feature_names)
+	# print(f"Explained variance for n components: {pca.explained_variance_ratio_[:n_components].sum():.4f}")
+
 
 	#categories to codes.
 	df_cats = df_cats.apply(lambda c: c.astype('category').cat.codes)
 
 	df_num.reset_index(drop=True, inplace=True)
 	df_cats.reset_index(drop=True, inplace=True)
-	df_description_new.reset_index(drop=True, inplace=True)
+	#df_description_new.reset_index(drop=True, inplace=True)
 
-	x = pd.concat([df_num, df_cats, df_description_new], axis=1)
+	x = pd.concat([df_num, df_cats], axis=1).astype('float32')
+	#x = pd.concat([df_num, df_cats, df_description_new], axis=1).astype('float32')
 	pd.concat([x, y], axis=1).to_csv('data/processed.csv')
 
 	print(x.isna().sum())
@@ -98,6 +102,6 @@ def get_labels():
        'Mystery', 'Romance', 'Sci-Fi', 'Thriller', 'War', 'Western'])
 
 def read_preprocessed(filepath):
-	df = pd.read_csv(filepath)
+	df = pd.read_csv(filepath, dtype='float32')
 	
 	return df.drop(get_labels(), axis=1), df[get_labels()]
