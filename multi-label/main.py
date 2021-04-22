@@ -3,7 +3,7 @@ from rakeld import rakeldClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from pathlib import Path
 
-PREPROCESS = True
+PREPROCESS = False
 
 def main():
 	datapath = Path("data")
@@ -15,7 +15,9 @@ def main():
 	
 	clf = AdaBoostClassifier()
 	test_size = 0.3
-	print("program is running")
+	
+	# RakelD: f1 = 69.01%, acc = 49.60%
+	# RakelD: f1_sampled = 97.21%
 	rakeldClassifier(x, y, test_size, clf)
 
 if __name__ == '__main__':

@@ -1,7 +1,5 @@
 import pandas as pd
 import numpy as np
-from nltk.corpus import stopwords
-import nltk
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, HashingVectorizer
 from sklearn.decomposition import PCA
@@ -32,14 +30,14 @@ def preprocess_data(filepath):
 	df_title = df['TITLE']
 	df.drop(['TITLE'], axis=1, inplace=True)
 
-	nltk.download('stopwords')
-	nltk.download('punkt')	
-	nltk_stop_words = stopwords.words("english")
+	#nltk.download('stopwords')
+	#nltk.download('punkt')	
+	#nltk_stop_words = stopwords.words("english")
 	
 	n_components = 250
 	#tfidf_vectoriser = HashingVectorizer(n_features=n_components, stop_words=nltk_stop_words)
 	#tfidf_vectoriser = CountVectorizer(min_df=5, stop_words=nltk_stop_words,ngram_range=(2,2))
-	tfidf_vectoriser = TfidfVectorizer(min_df=5, stop_words=nltk_stop_words,ngram_range=(2,2))
+	tfidf_vectoriser = TfidfVectorizer(min_df=5, stop_words='english',ngram_range=(2,2))
 	# #description data, DONE!
 	title = tfidf_vectoriser.fit_transform(df_title).todense()
 	pca = PCA(n_components=n_components)
@@ -52,8 +50,8 @@ def preprocess_data(filepath):
 	df_abstract = df['ABSTRACT']
 	df.drop(['ABSTRACT'], axis=1, inplace=True)
 	n_components = 3000
-	tfidf_vectoriser = HashingVectorizer(n_features=n_components, stop_words=nltk_stop_words)
-	#tfidf_vectoriser = TfidfVectorizer(min_df=10, stop_words=nltk_stop_words,ngram_range=(2,2))
+	#tfidf_vectoriser = HashingVectorizer(n_features=n_components, stop_words=nltk_stop_words)
+	tfidf_vectoriser = TfidfVectorizer(min_df=10, stop_words='english',ngram_range=(2,2))
 	# #description data, DONE!
 	abstract = tfidf_vectoriser.fit_transform(df_abstract).todense().astype('float32')
 	pca = PCA(n_components=n_components)
