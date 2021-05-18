@@ -5,7 +5,7 @@ from sklearn.metrics import f1_score, accuracy_score, precision_recall_fscore_su
 from sklearn.preprocessing import MultiLabelBinarizer
 
 
-def ClassifierChains(x,y,test_size,clf):
+def classifier_chains(x, y, test_size, clf):
 
     # defining classifier
     classifier = ClassifierChain(base_estimator=clf, order='random', cv='None', random_state=42)
