@@ -19,6 +19,7 @@ def main():
 	# RakelD: f1 = 69.01%, acc = 49.60%
 	# RakelD: f1_sampled = 97.21%
 	rakeldClassifier(x, y, test_size, clf)
+	ClassifierChains(x, y, test_size, clf)
 
 if __name__ == '__main__':
 	main()
