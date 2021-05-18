@@ -1,9 +1,11 @@
 from data_preprocessing import preprocess_data, read_preprocessed
 from rakeld import rakeldClassifier
+from classifier_chains import ClassifierChains
 from sklearn.ensemble import AdaBoostClassifier
 from pathlib import Path
 
 PREPROCESS = False
+
 
 def main():
 	datapath = Path("data")
@@ -20,6 +22,7 @@ def main():
 	# RakelD: f1_sampled = 97.21%
 	rakeldClassifier(x, y, test_size, clf)
 	ClassifierChains(x, y, test_size, clf)
+
 
 if __name__ == '__main__':
 	main()

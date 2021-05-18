@@ -4,21 +4,21 @@ from data_preprocessing import read_preprocessed, preprocess_data
 from sklearn.metrics import f1_score, accuracy_score, precision_recall_fscore_support
 from sklearn.preprocessing import MultiLabelBinarizer
 
-def ClassifierChains(x,y,test_size,clf)
 
-    #defining classifier
+def ClassifierChains(x,y,test_size,clf):
+
+    # defining classifier
     classifier = ClassifierChain(base_estimator=clf, order='random', cv='None', random_state=42)
 
     # splitting dataset
     X_train, X_test, y_train, y_test = train_test_split(random_state=0)
 
-    #fitting dataset
+    # fitting dataset
     classifier.fit(X_train, y_train)
 
     # predicting
     y_pred = classifier.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
-
 
     prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='micro')
     print('Classifier Chains: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
