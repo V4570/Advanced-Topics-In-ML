@@ -8,7 +8,7 @@ PREPROCESS = False
 
 
 def main():
-	datapath = Path("data")
+	datapath = Path(".")
 	
 	if PREPROCESS:
 		x, y = preprocess_data(datapath / "articles.csv")
@@ -20,7 +20,7 @@ def main():
 	
 	# RakelD: f1 = 69.01%, acc = 49.60%
 	# RakelD: f1_sampled = 97.21%
-	rakeld_classifier(x, y, test_size, clf)
+	#rakeld_classifier(x, y, test_size, clf)
 	classifier_chains(x, y, test_size, clf)
 
 
