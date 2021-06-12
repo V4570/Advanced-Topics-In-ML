@@ -1,6 +1,7 @@
 from data_preprocessing import preprocess_data, read_preprocessed
 from rakeld import rakeld_classifier
 from classifier_chains import classifier_chains
+from label_powerset import label_powerset
 from sklearn.ensemble import AdaBoostClassifier
 from pathlib import Path
 
@@ -22,6 +23,9 @@ def main():
 	# RakelD: f1_sampled = 97.21%
 	rakeld_classifier(x, y, test_size, clf)
 	classifier_chains(x, y, test_size, clf)
+	# Label Powerset: f1 = 49.73%, acc = 39.97%
+	# Label Powerset: f1_sampled = 100.00% uhmmm(?)
+	label_powerset(x, y, test_size, clf)
 
 
 if __name__ == '__main__':
