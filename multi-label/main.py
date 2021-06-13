@@ -17,7 +17,6 @@ def main():
 	
 	clf = AdaBoostClassifier()
 	test_size = 0.3
-	
 	# RakelD: f1 = 69.01%, acc = 49.60%
 	# RakelD: f1_sampled = 97.21%
 	#rakeld_classifier(x, y, test_size, clf)
