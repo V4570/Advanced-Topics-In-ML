@@ -28,5 +28,5 @@ def f1_sampled(actual, pred):
     pred = mlb.fit_transform(pred)
 
     # fitting the data for calculating the f1 score
-    f1 = f1_score(actual, pred, average = "samples")
+    f1 = f1_score(actual, pred, average="samples")
     return f1
