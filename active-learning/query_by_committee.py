@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score, precision_recall_fscore_support, accuracy_score, roc_auc_score
+from sklearn.metrics import f1_score, precision_recall_fscore_support, accuracy_score, roc_auc_score, confusion_matrix
 import numpy as np
 from copy import deepcopy
 import matplotlib as mpl
@@ -27,7 +27,7 @@ def query_by_cmt(x, y, clf):
 		queryY_train = y_pool[train_idx]
 		
 		x_pool = np.delete(x_pool, train_idx, axis=0)
-		y_pool = np.delete(y_pool, train_idx)
+		y_pool = np.delete(y_pool, train_idx, axis=0)
 		
 		learner = ActiveLearner(
 			estimator=clf,
@@ -74,9 +74,10 @@ def query_by_cmt(x, y, clf):
 	y_pred = committee.predict(x_test)
 	
 	acc = accuracy_score(y_test, y_pred)
-	prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='micro')
+	prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='macro')
 	roc_auc = roc_auc_score(y_test, y_pred)
 	
 	print('Query By Committee: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
 	print('Query By Committee: prec = %.2f%%, rec = %.2f%%' % (prec * 100, rec * 100))
 	print(roc_auc)
+	print(confusion_matrix(y_test, y_pred).ravel())
