@@ -1,7 +1,6 @@
 from sklearn.cluster import KMeans
 from imblearn.over_sampling import KMeansSMOTE
 from sklearn.metrics import f1_score, precision_recall_curve, precision_recall_fscore_support, auc, silhouette_score
-from sklearn.model_selection import train_test_split
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -9,8 +8,7 @@ TESTING = False
 PLOTTING = False
 
 
-def cbs(x, y, test_size, classifier):
-	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=0)
+def cbs(x_train, x_test, y_train, y_test, classifier):
 	
 	if TESTING:
 		elbow(x_train, y_train)

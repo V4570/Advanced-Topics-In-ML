@@ -10,18 +10,19 @@ RANDOM_STATE_SEED = 1
 np.random.seed(RANDOM_STATE_SEED)
 
 
-def query_by_cmt(x, y, clf):
-	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
+def qbc(x_train, x_test, y_train, y_test, clf):
 	
 	x_pool = deepcopy(x_train.to_numpy())
 	y_pool = deepcopy(y_train.to_numpy())
 	
+	# committee members
 	n_members = 2
 	learner_list = list()
 	
+	# initializing the committee members (learners)
 	for member_idx in range(n_members):
 		# initial training data
-		n_initial = 100
+		n_initial = 2
 		train_idx = np.random.choice(range(x_pool.shape[0]), size=n_initial, replace=False)
 		queryX_train = x_pool[train_idx]
 		queryY_train = y_pool[train_idx]
@@ -41,17 +42,23 @@ def query_by_cmt(x, y, clf):
 	
 	performance_history = [unqueried_score]
 	
-	n_queries = 350
+	# actual query by committee process
+	n_queries = 10
 	for idx in range(n_queries):
+		# gets the most valuable point in the data
 		query_idx, query_instance = committee.query(x_pool)
+		# retrains the learners based on the valuable point
 		committee.teach(
 			X=x_pool[query_idx].reshape(1, -1),
 			y=y_pool[query_idx].reshape(1, )
 		)
+		
 		performance_history.append(committee.score(x_train, y_train))
+		
 		# remove queried instance from pool
 		x_pool = np.delete(x_pool, query_idx, axis=0)
 		y_pool = np.delete(y_pool, query_idx)
+	
 	
 	fig, ax = plt.subplots(figsize=(8.5, 6), dpi=130)
 	
