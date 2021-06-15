@@ -1,21 +1,16 @@
 import numpy as np
 from modAL.models import ActiveLearner
 from sklearn.metrics import confusion_matrix
-import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sn
-from imblearn.over_sampling import SMOTE
 
 
-def pool_based(data, clf, queries, query_strategy):
+def pool_based(x, y, clf, queries, query_strategy):
 
-    dataset = pd.read_csv(data)
 
-    X = dataset.iloc[:, :-1].values
-    y = dataset.iloc[:, -1].values
-
-    X_raw, y_raw = SMOTE().fit_resample(X, y)
+    X_raw = x.iloc[:, :].values
+    y_raw = y.iloc[:].values
 
     n_labeled = X_raw.shape[0]
 
@@ -25,6 +20,7 @@ def pool_based(data, clf, queries, query_strategy):
     y_train = y_raw[idxs]
 
     X_pool = np.delete(X_raw, idxs, axis=0)
+    print(np.shape(X_pool))
     y_pool = np.delete(y_raw, idxs, axis=0)
 
     n_queries = queries
