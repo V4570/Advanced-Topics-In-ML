@@ -10,7 +10,7 @@ from numpy import where
 import numpy as np
 
 
-def smote_tomek(x_train, x_test, y_train, y_test, classifier):
+def smote_tomek(x_train, x_test, y_train, y_test, classifier, standalone=False):
     
     # applying smote&tomek links
     sm = SMOTETomek(random_state=42, sampling_strategy='minority')
@@ -75,23 +75,24 @@ def smote_tomek(x_train, x_test, y_train, y_test, classifier):
     pyplot.tight_layout(pad=3)
     pyplot.show()
     
+    if standalone:
+        # calculate scores
+        lr_probs = classifier.predict_proba(x_test)
+        lr_probs = lr_probs[:, 1]
+        lr_precision, lr_recall, _ = precision_recall_curve(y_test, lr_probs)
+        lr_f1, lr_auc = f1_score(y_test, y_predicted, average='micro'), auc(lr_recall, lr_precision)
+        print('Smote & Tomek Links: f1 = %.2f%% auc = %.2f%%' % (lr_f1 * 100, lr_auc * 100))
+        prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_predicted, average='micro')
+        print('Smote & Tomek Links: precision = %.2f%% recall = %.2f%%' % (prec * 100, rec * 100))
+        no_skill = len(y_test[y_test == 0]) / len(y_test)
     
-    # calculate scores
-    lr_probs = classifier.predict_proba(x_test)
-    lr_probs = lr_probs[:, 1]
-    lr_precision, lr_recall, _ = precision_recall_curve(y_test, lr_probs)
-    lr_f1, lr_auc = f1_score(y_test, y_predicted, average='micro'), auc(lr_recall, lr_precision)
-    print('Smote & Tomek Links: f1 = %.2f%% auc = %.2f%%' % (lr_f1*100, lr_auc*100))
-    prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_predicted, average='micro')
-    print('Smote & Tomek Links: precision = %.2f%% recall = %.2f%%' % (prec*100, rec*100))
-    no_skill = len(y_test[y_test==0]) / len(y_test)
-    
-    # Precision - Recall Curve Plot
-    pyplot.plot([0, 1], [no_skill, no_skill], linestyle='--', label='No Skill')
-    pyplot.plot(lr_recall, lr_precision, marker='.', label='Smote & Tomek Links')
-    pyplot.xlabel('Recall')
-    pyplot.ylabel('Precision')
-    pyplot.legend()
-    pyplot.title("Precision-Recall Curve")
-    pyplot.show()
+        # Precision - Recall Curve Plot
+        pyplot.plot([0, 1], [no_skill, no_skill], linestyle='--', label='No Skill')
+        pyplot.plot(lr_recall, lr_precision, marker='.', label='Smote & Tomek Links')
+        pyplot.xlabel('Recall')
+        pyplot.ylabel('Precision')
+        pyplot.legend()
+        pyplot.title("Precision-Recall Curve")
+        pyplot.show()
 
+    return y_predicted
