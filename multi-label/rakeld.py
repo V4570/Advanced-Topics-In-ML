@@ -5,10 +5,9 @@ from sklearn.metrics import f1_score
 from sklearn.preprocessing import MultiLabelBinarizer
 
 
-def rakeld_classifier(x, y, test_size, clf):
+def rakeld_classifier(x_train, x_test, y_train, y_test, clf):
     classifier = RakelD(base_classifier=clf, labelset_size=2)
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=0)
     classifier.fit(x_train, y_train)
     yhat = classifier.predict(x_test)
     
