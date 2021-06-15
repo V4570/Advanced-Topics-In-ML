@@ -4,6 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import f1_score, accuracy_score, precision_recall_fscore_support
 from sklearn.preprocessing import MultiLabelBinarizer
+from time import time
+
+# test for OVR
 
 
 def classifier_chains(x, y, test_size, clf):
@@ -14,15 +17,23 @@ def classifier_chains(x, y, test_size, clf):
 
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=42)
 
-    
 
+    '''
+    # creating an OVR classifier:
+
+    #ovr = OneVsRestClassifier(clf)
+    #y_pred_ovr = ovr.predict(X_test)
+    #vr_acc_score = accuracy_score(y_test, y_pred_ovr)
+    '''
     # creating an ensemble of the base classifiers:
 
     chains = [ClassifierChain(base_estimator=clf, order='random', random_state=i) for i in range(5)]
 
     for chain in chains:
         print('loading')
+        t1 = time()
         chain.fit(X_train, y_train)
+        print('fit done in ', time() - t1)
 
     y_pred_chains = np.array([chain.predict(X_test) for chain in chains])
     chain_accuracy_scores = [accuracy_score(y_test, y_pred_chain) for y_pred_chain in y_pred_chains]
@@ -79,5 +90,4 @@ def f1_sampled(actual, pred):
     # fitting the data for calculating the f1 score
     f1 = f1_score(actual, pred, average="samples")
     return f1
-    
 '''
