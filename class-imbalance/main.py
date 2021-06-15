@@ -60,10 +60,21 @@ def main():
 		
 		pred = cbs(x_train, x_test, y_train, y_test, clf, standalone=False)
 		results[name].append(calc_scores(y_test, pred, 'Cluster Based Sampling'))
-	
-		print(results)
 		
-	print(results)
+	for r in results:
+		print(f'Classifier: {r}')
+		print(f'{"Type":<24} {"Accuracy":<10} {"Precision":<10} {"Recall":<10} {"F1":<8} {"ROC/AUC":<8}')
+		for d in results[r]:
+			print(
+				(
+					f'{d["method"]:<24} '
+					f'{d["accuracy"]:<10.2f} '
+					f'{d["precision"]:<10.2f} '
+					f'{d["recall"]:<10.2f} '
+					f'{d["f1"]:<8.2f} '
+					f'{d["roc_auc"]:<8.2f}'
+				)
+			)
 
 
 def calc_scores(y_true, y_predicted, method):
