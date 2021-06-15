@@ -1,4 +1,4 @@
-from query_by_committee import query_by_cmt
+from query_by_committee import qbc
 from imblearn.combine import SMOTETomek
 from sklearn.ensemble import AdaBoostClassifier
 from pool_based import pool_based, plot_accuracy, build_conf_matrix
@@ -23,7 +23,7 @@ def main():
 	sm = SMOTETomek(random_state=42, sampling_strategy='minority')
 	x_resampled, y_resampled = sm.fit_resample(x, y)
 	print(x_resampled)
-	#query_by_cmt(x_resampled, y_resampled, clf)
+	#qbc(x_resampled, y_resampled, clf)
 
 	queries = 40
 	for i in [uncertainty_sampling, margin_sampling, entropy_sampling]:

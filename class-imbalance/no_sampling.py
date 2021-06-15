@@ -1,12 +1,10 @@
 from sklearn.metrics import f1_score, precision_recall_curve, precision_recall_fscore_support, auc
-from sklearn.model_selection import train_test_split
 from matplotlib import pyplot as plt
 import numpy as np
 
 
-def no_sampling(x, y, test_size, classifier):
-	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=0)
-	
+def no_sampling(x_train, x_test, y_train, y_test, classifier):
+
 	clf = classifier
 	clf.fit(x_train, y_train)
 	
@@ -31,12 +29,12 @@ def no_sampling(x, y, test_size, classifier):
 	plt.title("Precision-Recall Curve")
 	plt.show()
 
-def only_majority_class(x, y, test_size, classifier):
+
+def only_majority_class(x_train, x_test, y_train, y_test, classifier):
 	'''
 	classifier is dump variable, only for reasons of uniformity. 
 	Function classifies data into the majority class.
 	'''
-	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=0)
 	
 	y_pred = np.zeros(y_test.shape[0])
 	

@@ -11,20 +11,20 @@ PREPROCESS = False
 
 def main():
 	datapath = Path("data")
-	
-	if PREPROCESS:
-		x, y = preprocess_data(datapath / "aug_train.csv")
-	else:
-		x, y = read_preprocessed(datapath / "processed.csv")
-	
-	clf = AdaBoostClassifier()
 	test_size = 0.2
 	
-	only_majority_class(x, y, test_size, clf)
-	no_sampling(x, y, test_size, clf)
-	easy_ensemble(x, y, test_size, clf)
-	smote_tomek(x, y, test_size, clf)
-	cbs(x, y, test_size, clf)
+	if PREPROCESS:
+		x_train, x_test, y_train, y_test = preprocess_data(datapath / "aug_train.csv", test_size)
+	else:
+		x_train, x_test, y_train, y_test = read_preprocessed(datapath)
+	
+	clf = AdaBoostClassifier()
+	
+	only_majority_class(x_train, x_test, y_train, y_test, clf)
+	no_sampling(x_train, x_test, y_train, y_test, clf)
+	easy_ensemble(x_train, x_test, y_train, y_test, clf)
+	smote_tomek(x_train, x_test, y_train, y_test, clf)
+	cbs(x_train, x_test, y_train, y_test, clf)
 
 
 if __name__ == '__main__':

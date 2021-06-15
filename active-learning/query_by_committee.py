@@ -16,9 +16,11 @@ def qbc(x, y, clf):
 	x_pool = deepcopy(x_train.to_numpy())
 	y_pool = deepcopy(y_train.to_numpy())
 	
+	# committee members
 	n_members = 15
 	learner_list = list()
 	
+	# initializing the committee members (learners)
 	for member_idx in range(n_members):
 		# initial training data
 		n_initial = 10
@@ -41,17 +43,23 @@ def qbc(x, y, clf):
 	
 	performance_history = [unqueried_score]
 	
+	# actual query by committee process
 	n_queries = 350
 	for idx in range(n_queries):
+		# gets the most valuable point in the data
 		query_idx, query_instance = committee.query(x_pool)
+		# retrains the learners based on the valuable point
 		committee.teach(
 			X=x_pool[query_idx].reshape(1, -1),
 			y=y_pool[query_idx].reshape(1, )
 		)
+		
 		performance_history.append(committee.score(x_train, y_train))
+		
 		# remove queried instance from pool
 		x_pool = np.delete(x_pool, query_idx, axis=0)
 		y_pool = np.delete(y_pool, query_idx)
+	
 	
 	fig, ax = plt.subplots(figsize=(8.5, 6), dpi=130)
 	
