@@ -9,15 +9,7 @@ from time import time
 # test for OVR
 
 
-def classifier_chains(x, y, test_size, clf):
-
-
-
-    # splitting dataset
-
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=test_size, random_state=42)
-
-
+def classifier_chains(x_train, x_test, y_train, y_test, clf):
     '''
     # creating an OVR classifier:
 
@@ -32,17 +24,14 @@ def classifier_chains(x, y, test_size, clf):
     for chain in chains:
         print('loading')
         t1 = time()
-        chain.fit(X_train, y_train)
+        chain.fit(x_train, y_train)
         print('fit done in ', time() - t1)
 
-    y_pred_chains = np.array([chain.predict(X_test) for chain in chains])
+    y_pred_chains = np.array([chain.predict(x_test) for chain in chains])
     chain_accuracy_scores = [accuracy_score(y_test, y_pred_chain) for y_pred_chain in y_pred_chains]
     y_pred_ensemble = y_pred_chains.mean(axis=0)
     print(y_pred_ensemble >= .5)
     print('chains done')
-
-
-
 
     ensemble_accuray_score = accuracy_score(y_test, y_pred_ensemble >= .5)
 
