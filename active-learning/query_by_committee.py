@@ -10,18 +10,18 @@ RANDOM_STATE_SEED = 1
 np.random.seed(RANDOM_STATE_SEED)
 
 
-def query_by_cmt(x, y, clf):
+def qbc(x, y, clf):
 	x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
 	
 	x_pool = deepcopy(x_train.to_numpy())
 	y_pool = deepcopy(y_train.to_numpy())
 	
-	n_members = 2
+	n_members = 15
 	learner_list = list()
 	
 	for member_idx in range(n_members):
 		# initial training data
-		n_initial = 100
+		n_initial = 10
 		train_idx = np.random.choice(range(x_pool.shape[0]), size=n_initial, replace=False)
 		queryX_train = x_pool[train_idx]
 		queryY_train = y_pool[train_idx]

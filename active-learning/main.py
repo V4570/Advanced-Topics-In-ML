@@ -1,4 +1,4 @@
-from query_by_committee import query_by_cmt
+from query_by_committee import qbc
 from imblearn.combine import SMOTETomek
 from sklearn.ensemble import AdaBoostClassifier
 from pathlib import Path
@@ -20,7 +20,7 @@ def main():
 	sm = SMOTETomek(random_state=42, sampling_strategy='minority')
 	x_resampled, y_resampled = sm.fit_resample(x, y)
 	
-	query_by_cmt(x_resampled, y_resampled, clf)
+	qbc(x_resampled, y_resampled, clf)
 
 
 if __name__ == '__main__':
