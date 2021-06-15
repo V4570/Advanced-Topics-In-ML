@@ -80,11 +80,11 @@ def preprocess_data(filepath, test_size):
 	df_abstract_new_test = pd.DataFrame(pca.transform(abstract_test), columns=df_abstract_feature_names)
 	print(f"Explained variance for n components [ABSTRACT]: {pca.explained_variance_ratio_[:n_components].sum():.4f}")
 
-	x_train = pd.concat([df_title_new_train, df_abstract_new_train.reset_index(drop=True)], axis=1).astype('float32')
-	x_test = pd.concat([df_title_new_test, df_abstract_new_test.reset_index(drop=True)], axis=1).astype('float32')
+	x_train = pd.concat([df_title_new_train, df_abstract_new_train], axis=1).astype('float32')
+	x_test = pd.concat([df_title_new_test, df_abstract_new_test], axis=1).astype('float32')
 
-	pd.concat([x_train, y_train], axis=1).to_csv('data/processed_train.csv')
-	pd.concat([x_test, y_test], axis=1).to_csv('data/processed_test.csv')
+	pd.concat([x_train, y_train.reset_index(drop=True)], axis=1).to_csv('data/processed_train.csv')
+	pd.concat([x_test, y_test.reset_index(drop=True)], axis=1).to_csv('data/processed_test.csv')
 
 	return x_train, x_test, y_train, y_test
 

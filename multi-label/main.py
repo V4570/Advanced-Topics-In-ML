@@ -5,7 +5,7 @@ from label_powerset import label_powerset
 from sklearn.ensemble import AdaBoostClassifier
 from pathlib import Path
 
-PREPROCESS = True
+PREPROCESS = False
 
 
 def main():
@@ -20,13 +20,11 @@ def main():
 	clf = AdaBoostClassifier()
 	test_size = 0.3
 
-	# RakelD: f1 = 69.01%, acc = 49.60%
-	# RakelD: f1_sampled = 97.21%
+	# RakelD: f1 = 67.95%, acc = 49.18%
+	# RakelD: f1_sampled = 98.19%
 	rakeld_classifier(x_train, x_test, y_train, y_test, clf)
-	#classifier_chains(x, y, test_size, clf)
-	# Label Powerset: f1 = 49.73%, acc = 39.97%
-	# Label Powerset: f1_sampled = 100.00% uhmmm(?)
-	#label_powerset(x, y, test_size, clf)
+	classifier_chains(x_train, x_test, y_train, y_test, clf)
+	label_powerset(x_train, x_test, y_train, y_test, clf)
 
 
 if __name__ == '__main__':
