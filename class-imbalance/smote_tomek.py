@@ -7,6 +7,7 @@ from sklearn.metrics import precision_recall_fscore_support
 from matplotlib import pyplot
 from sklearn.decomposition import PCA
 from numpy import where
+import numpy as np
 
 
 def smote_tomek(x_train, x_test, y_train, y_test, classifier):
@@ -22,41 +23,57 @@ def smote_tomek(x_train, x_test, y_train, y_test, classifier):
     
     # plot for SMOTE & Tomek Links
     # dropping into 2dim
-    # pca = PCA(n_components=2)
-    # X_vis = pca.fit_transform(X)
-    # X_res, y_res = sm.fit_resample(x_train, y_train)
-    # X_res_vis = pca.transform(X_res)
+    pca = PCA(n_components=2)
+    X_vis = pca.fit_transform(x_train)
+    X_res, y_res = sm.fit_resample(x_train, y_train)
+    X_res_vis = pca.transform(X_res)
     #
-    # # plotting original set
-    # f, (ax1, ax2) = pyplot.subplots(1, 2)
+    # plotting original set
+
+    f, (ax1, ax2) = pyplot.subplots(1, 2)
+    A = X_vis[y_train == 0, 0]
+    print(np.shape(A))
+    B = X_vis[y_train == 0, 1]
+    print(np.shape(B))
+    C = X_vis[y_train == 1, 0]
+    print(np.shape(C))
+    D = X_vis[y_train == 1, 1]
+    print(np.shape(D))
+    c0 = ax1.scatter(A[:200], B[:200], label="Not looking for job change",
+                      alpha=0.5)
+    c1 = ax1.scatter(C[:66], D[:66], label="Looking for a job change",
+                      alpha=0.5)
+    ax1.set_title('Original set')
     #
-    # c0 = ax1.scatter(X_vis[y == 0, 0], X_vis[y == 0, 1], label="Not looking for job change",
-    #                  alpha=0.5)
-    # c1 = ax1.scatter(X_vis[y == 1, 0], X_vis[y == 1, 1], label="Looking for a job change",
-    #                  alpha=0.5)
-    # ax1.set_title('Original set')
-    #
-    # # plotting SMOTE & Tomek Links
-    # ax2.scatter(X_res_vis[y_resampled == 0, 0], X_res_vis[y_resampled == 0, 1],
-    #             label="Not looking for job change", alpha=0.5)
-    # ax2.scatter(X_res_vis[y_resampled == 1, 0], X_res_vis[y_resampled == 1, 1],
-    #             label="Looking for a job change", alpha=0.5)
-    # ax2.set_title('SMOTE & Tomek Links')
+    # plotting SMOTE & Tomek Links
+    A_r = X_res_vis[y_resampled == 0, 0]
+    print(np.shape(A_r))
+    B_r = X_res_vis[y_resampled == 0, 1]
+    print(np.shape(B_r))
+    C_r = X_res_vis[y_resampled == 1, 0]
+    print(np.shape(C_r))
+    D_r = X_res_vis[y_resampled == 1, 1]
+    print(np.shape(D_r))
+    ax2.scatter(A_r[:200], B_r[:200],
+                 label="Not looking for job change", alpha=0.5)
+    ax2.scatter(C_r[:200], D_r[:200],
+                 label="Looking for a job change", alpha=0.5)
+    ax2.set_title('SMOTE & Tomek Links')
     #
     # # shape plotting
-    # for ax in (ax1, ax2):
-    #     ax.spines['top'].set_visible(False)
-    #     ax.spines['right'].set_visible(False)
-    #     ax.get_xaxis().tick_bottom()
-    #     ax.get_yaxis().tick_left()
-    #     ax.spines['left'].set_position(('outward', 10))
-    #     ax.spines['bottom'].set_position(('outward', 10))
-    #     ax.set_xlim([-100, 100])
-    #     ax.set_ylim([-100, 100])
-    #
-    # pyplot.figlegend((c0, c1), ('Not looking for job change', 'Looking for a job change'), loc='lower center', ncol=2, labelspacing=0.)
-    # pyplot.tight_layout(pad=3)
-    # pyplot.show()
+    for ax in (ax1, ax2):
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.get_xaxis().tick_bottom()
+        ax.get_yaxis().tick_left()
+        ax.spines['left'].set_position(('outward', 10))
+        ax.spines['bottom'].set_position(('outward', 10))
+        ax.set_xlim([-50, 50])
+        ax.set_ylim([-1, 1])
+
+    pyplot.figlegend((c0, c1), ('Not looking for job change', 'Looking for a job change'), loc='lower center', ncol=2, labelspacing=0.)
+    pyplot.tight_layout(pad=3)
+    pyplot.show()
     
     
     # calculate scores

@@ -6,7 +6,7 @@ from cluster_based_sampling import cbs
 from sklearn.ensemble import AdaBoostClassifier
 from pathlib import Path
 
-PREPROCESS = False
+PREPROCESS = True
 
 
 def main():
@@ -20,11 +20,11 @@ def main():
 	
 	clf = AdaBoostClassifier()
 	
-	only_majority_class(x_train, x_test, y_train, y_test, clf)
-	no_sampling(x_train, x_test, y_train, y_test, clf)
-	easy_ensemble(x_train, x_test, y_train, y_test, clf)
+	#only_majority_class(x_train, x_test, y_train, y_test, clf)
+	#no_sampling(x_train, x_test, y_train, y_test, clf)
+	#easy_ensemble(x_train, x_test, y_train, y_test, clf)
 	smote_tomek(x_train, x_test, y_train, y_test, clf)
-	cbs(x_train, x_test, y_train, y_test, clf)
+	#cbs(x_train, x_test, y_train, y_test, clf)
 
 
 if __name__ == '__main__':
