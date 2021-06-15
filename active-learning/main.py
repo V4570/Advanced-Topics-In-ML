@@ -3,7 +3,7 @@ from imblearn.combine import SMOTETomek
 from sklearn.ensemble import AdaBoostClassifier
 from pool_based import pool_based, plot_accuracy, build_conf_matrix
 from pathlib import Path
-from modAL.uncertainty import uncertainty_sampling, margin_sampling, entropy_sampling
+from modAL.uncertainty import uncertainty_sampling, margin_sampling
 import pandas as pd
 
 
@@ -26,7 +26,7 @@ def main():
 	#query_by_cmt(x_resampled, y_resampled, clf)
 
 	queries = 40
-	for i in [uncertainty_sampling, margin_sampling, entropy_sampling]:
+	for i in [uncertainty_sampling, margin_sampling]:
 		print('-----------------------------------------------------------------')
 		print('-----------------------------------------------------------------')
 		query_strategy = i

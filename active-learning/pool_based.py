@@ -4,13 +4,15 @@ from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sn
+from sklearn.model_selection import train_test_split
 
 
 def pool_based(x, y, clf, queries, query_strategy):
 
+    x = x.iloc[:, :].values
+    y = y.iloc[:].values
 
-    X_raw = x.iloc[:, :].values
-    y_raw = y.iloc[:].values
+    X_raw, X_test, y_raw, y_test = train_test_split(x, y, test_size=0.3)
 
     n_labeled = X_raw.shape[0]
 
@@ -20,7 +22,6 @@ def pool_based(x, y, clf, queries, query_strategy):
     y_train = y_raw[idxs]
 
     X_pool = np.delete(X_raw, idxs, axis=0)
-    print(np.shape(X_pool))
     y_pool = np.delete(y_raw, idxs, axis=0)
 
     n_queries = queries
@@ -50,9 +51,9 @@ def pool_based(x, y, clf, queries, query_strategy):
 
         # predicting:
 
-    y_pred = learner.predict(X_raw)
+    y_pred = learner.predict(X_test)
 
-    return performance_hist, y_raw, y_pred
+    return performance_hist, y_test, y_pred
 
 
 def plot_accuracy(list):
