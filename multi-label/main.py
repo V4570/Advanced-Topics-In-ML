@@ -22,9 +22,9 @@ def main():
 
 	# RakelD: f1 = 67.95%, acc = 49.18%
 	# RakelD: f1_sampled = 98.19%
-	rakeld_classifier(x_train, x_test, y_train, y_test, clf)
-	classifier_chains(x_train, x_test, y_train, y_test, clf)
-	label_powerset(x_train, x_test, y_train, y_test, clf)
+	# rakeld_classifier(x_train, x_test, y_train, y_test, clf)
+	# classifier_chains(x_train, x_test, y_train, y_test, clf)
+	# label_powerset(x_train, x_test, y_train, y_test, clf)
 
 
 if __name__ == '__main__':

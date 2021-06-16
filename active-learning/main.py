@@ -50,7 +50,7 @@ def main():
 		# pred = qbc(x_train_resampled, x_test, y_train_resampled, y_test, clf, standalone=False)
 		# results[name].append(calc_scores(y_test, pred, 'Query By Committee'))
 
-		pred_pool = pool_based(x_train_resampled, x_test, y_train_resampled, y_test, clf, standalone=True)
+		pred_pool = pool_based(x_train_resampled, x_test, y_train_resampled, y_test, clf)
 		results[name].append(calc_scores(y_test, pred_pool, 'Pool Based'))
 
 		pretty_print(results)

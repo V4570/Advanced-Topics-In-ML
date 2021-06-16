@@ -24,7 +24,7 @@ def preprocess_data(filepath, test_size):
 	df.drop(['ID'], axis=1, inplace=True)
 
 	# y data, DONE!
-	y = df.iloc[:,2:]
+	y = df.iloc[:, 2:]
 	df.drop(['Computer Science','Physics', 'Mathematics', 'Statistics', 'Quantitative Biology', 'Quantitative Finance'], axis=1, inplace=True)
 
 	x_train, x_test, y_train, y_test = train_test_split(df, y, test_size=test_size, random_state=0)

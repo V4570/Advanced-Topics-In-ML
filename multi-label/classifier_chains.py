@@ -3,22 +3,39 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import f1_score, accuracy_score, precision_recall_fscore_support
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.multiclass import OneVsRestClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier
 from time import time
 
-# test for OVR
 
 
 def classifier_chains(x_train, x_test, y_train, y_test, clf):
-    '''
-    # creating an OVR classifier:
 
-    #ovr = OneVsRestClassifier(clf)
-    #y_pred_ovr = ovr.predict(X_test)
-    #vr_acc_score = accuracy_score(y_test, y_pred_ovr)
-    '''
     # creating an ensemble of the base classifiers:
 
+    classifier = KNeighborsClassifier(n_neighbors=3)
+    base_class = DecisionTreeClassifier()
+    ovr = OneVsRestClassifier(estimator=classifier)
+    ovr_new = OneVsRestClassifier(estimator=base_class)
+    print('fitting')
+    ovr.fit(x_train, y_train)
+    y_pred_ovr = ovr.predict(x_test)
+    print(y_pred_ovr)
+    acc_ovr = accuracy_score(y_test, y_pred_ovr)
+    print(acc_ovr)
+
+    prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred_ovr, average='micro')
+    print('Classifier Chains: f1 = %.2f%%, acc = %.2f%%, precision = %.2f%%' % (f1 * 100, acc_ovr * 100, prec * 100))
+
+    ovr_new.fit(x_train, y_train)
+    y_pred_ovr_new = ovr_new.predict(x_test)
+    print(y_pred_ovr_new)
+    acc_ovr = accuracy_score(y_test, y_pred_ovr_new)
+    print(acc_ovr)
+
+    prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred_ovr_new, average='micro')
+    print('Classifier Chains: f1 = %.2f%%, acc = %.2f%%, precision = %.2f%%' % (f1 * 100, acc_ovr * 100, prec * 100))
     chains = [ClassifierChain(base_estimator=clf, order='random', random_state=i) for i in range(5)]
 
     for chain in chains:
