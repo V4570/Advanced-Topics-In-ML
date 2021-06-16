@@ -13,9 +13,10 @@ def label_powerset(x_train, x_test, y_train, y_test, clf, standalone=False):
 	if standalone:
 		acc = accuracy_score(y_test, y_pred)
 		prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='micro')
-		f1_s = f1_sampled(y_test.to_numpy(), y_pred.toarray())
+		# f1_s = f1_sampled(y_test.to_numpy(), y_pred.toarray())
 		
 		print('Label powerset: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
+		'''
 		print('Label powerset: f1_sampled = %.2f%%' % (f1_s * 100))
 
 
@@ -28,3 +29,4 @@ def f1_sampled(actual, pred):
 	# fitting the data for calculating the f1 score
 	f1 = f1_score(actual, pred, average="samples")
 	return f1
+'''
