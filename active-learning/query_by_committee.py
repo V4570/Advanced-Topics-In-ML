@@ -9,7 +9,7 @@ RANDOM_STATE_SEED = 1
 np.random.seed(RANDOM_STATE_SEED)
 
 
-def qbc(x_train, x_test, y_train, y_test, clf):
+def qbc(x_train, x_test, y_train, y_test, clf, standalone=False):
 	
 	x_pool = deepcopy(x_train.to_numpy())
 	y_pool = deepcopy(y_train.to_numpy())
@@ -21,7 +21,7 @@ def qbc(x_train, x_test, y_train, y_test, clf):
 	# initializing the committee members (learners)
 	for member_idx in range(n_members):
 		# initial training data
-		n_initial = 2
+		n_initial = 10
 		train_idx = np.random.choice(range(x_pool.shape[0]), size=n_initial, replace=False)
 		queryX_train = x_pool[train_idx]
 		queryY_train = y_pool[train_idx]
@@ -42,7 +42,7 @@ def qbc(x_train, x_test, y_train, y_test, clf):
 	performance_history = [unqueried_score]
 	
 	# actual query by committee process
-	n_queries = 10
+	n_queries = 100
 	for idx in range(n_queries):
 		# gets the most valuable point in the data
 		query_idx, query_instance = committee.query(x_pool)
@@ -58,32 +58,34 @@ def qbc(x_train, x_test, y_train, y_test, clf):
 		x_pool = np.delete(x_pool, query_idx, axis=0)
 		y_pool = np.delete(y_pool, query_idx)
 	
-	
-	fig, ax = plt.subplots(figsize=(8.5, 6), dpi=130)
-	
-	ax.plot(performance_history)
-	ax.scatter(range(len(performance_history)), performance_history, s=13)
-	
-	ax.xaxis.set_major_locator(mpl.ticker.MaxNLocator(nbins=5, integer=True))
-	ax.yaxis.set_major_locator(mpl.ticker.MaxNLocator(nbins=10))
-	ax.yaxis.set_major_formatter(mpl.ticker.PercentFormatter(xmax=1))
-	
-	ax.set_ylim(bottom=0, top=1)
-	ax.grid(True)
-	
-	ax.set_title('Incremental classification accuracy')
-	ax.set_xlabel('Query iteration')
-	ax.set_ylabel('Classification Accuracy')
-	
-	plt.show()
-	
 	y_pred = committee.predict(x_test)
 	
-	acc = accuracy_score(y_test, y_pred)
-	prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='macro')
-	roc_auc = roc_auc_score(y_test, y_pred)
+	if standalone:
+		fig, ax = plt.subplots(figsize=(8.5, 6), dpi=130)
+		
+		ax.plot(performance_history)
+		ax.scatter(range(len(performance_history)), performance_history, s=13)
+		
+		ax.xaxis.set_major_locator(mpl.ticker.MaxNLocator(nbins=5, integer=True))
+		ax.yaxis.set_major_locator(mpl.ticker.MaxNLocator(nbins=10))
+		ax.yaxis.set_major_formatter(mpl.ticker.PercentFormatter(xmax=1))
+		
+		ax.set_ylim(bottom=0, top=1)
+		ax.grid(True)
+		
+		ax.set_title('Incremental classification accuracy')
+		ax.set_xlabel('Query iteration')
+		ax.set_ylabel('Classification Accuracy')
+		
+		plt.show()
+		
+		acc = accuracy_score(y_test, y_pred)
+		prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='macro')
+		roc_auc = roc_auc_score(y_test, y_pred)
+		
+		print('Query By Committee: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
+		print('Query By Committee: prec = %.2f%%, rec = %.2f%%' % (prec * 100, rec * 100))
+		print(roc_auc)
+		print(confusion_matrix(y_test, y_pred).ravel())
 	
-	print('Query By Committee: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
-	print('Query By Committee: prec = %.2f%%, rec = %.2f%%' % (prec * 100, rec * 100))
-	print(roc_auc)
-	print(confusion_matrix(y_test, y_pred).ravel())
+	return y_pred

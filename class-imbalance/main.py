@@ -60,7 +60,11 @@ def main():
 		
 		pred = cbs(x_train, x_test, y_train, y_test, clf, standalone=False)
 		results[name].append(calc_scores(y_test, pred, 'Cluster Based Sampling'))
-		
+	
+	pretty_print(results)
+
+
+def pretty_print(results):
 	for r in results:
 		print(f'{"/":-<69}')
 		print(f'Classifier: {r}')
