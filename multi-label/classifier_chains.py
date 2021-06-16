@@ -1,9 +1,7 @@
 from sklearn.multioutput import ClassifierChain
-from sklearn.model_selection import train_test_split
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.metrics import f1_score, accuracy_score, precision_recall_fscore_support
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from time import time
 
 # test for OVR
@@ -68,19 +66,3 @@ def classifier_chains(x_train, x_test, y_train, y_test, clf, standalone=False):
     
     return y_pred_ensemble
 
-'''
-    f1_s = f1_sampled(y_test, y_pred_ensemble >= .5)
-    print('Classifier Chains: f1_sampled = %.2f%%' % (f1_s * 100))
-
-
-
-def f1_sampled(actual, pred):
-    # converting the multi-label classification to a binary output
-    mlb = MultiLabelBinarizer()
-    actual = mlb.fit_transform(actual)
-    pred = mlb.fit_transform(pred)
-
-    # fitting the data for calculating the f1 score
-    f1 = f1_score(actual, pred, average="samples")
-    return f1
-'''

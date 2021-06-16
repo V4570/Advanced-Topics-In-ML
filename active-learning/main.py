@@ -6,7 +6,6 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc
 from pool_based import pool_based
 from stream_based import stream_based
 from pathlib import Path
-from modAL.uncertainty import uncertainty_sampling, margin_sampling, entropy_sampling
 import pandas as pd
 
 

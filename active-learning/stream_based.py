@@ -3,8 +3,7 @@ from copy import deepcopy
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from modAL.models import ActiveLearner
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import f1_score, precision_recall_fscore_support, accuracy_score, roc_auc_score, confusion_matrix
+from sklearn.metrics import precision_recall_fscore_support, accuracy_score, roc_auc_score, confusion_matrix
 import seaborn as sn
 
 

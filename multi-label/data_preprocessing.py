@@ -33,12 +33,8 @@ def preprocess_data(filepath, test_size):
 	df_title_train = x_train['TITLE']
 	df_title_test = x_test['TITLE']
 
-	# df_title = df['TITLE']
 	df.drop(['TITLE'], axis=1, inplace=True)
 	
-	
-	# tfidf_vectoriser = HashingVectorizer(n_features=n_components, stop_words=nltk_stop_words)
-	# tfidf_vectoriser = CountVectorizer(min_df=5, stop_words=nltk_stop_words,ngram_range=(2,2))
 	tfidf_vectoriser = TfidfVectorizer(min_df=5, stop_words='english',ngram_range=(2,2))
 	# description data, DONE!
 	

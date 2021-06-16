@@ -1,7 +1,7 @@
 from sklearn.cluster import KMeans
 from imblearn.over_sampling import KMeansSMOTE
 from sklearn.metrics import f1_score, precision_recall_curve, \
-	precision_recall_fscore_support, auc, silhouette_score, plot_confusion_matrix, roc_curve, roc_auc_score
+	precision_recall_fscore_support, auc, silhouette_score, plot_confusion_matrix, roc_curve
 import numpy as np
 from matplotlib import pyplot as plt
 

@@ -5,15 +5,9 @@ import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sn
 from copy import deepcopy
-# from sklearn.model_selection import train_test_split
 
 
 def pool_based(x_train, x_test, y_train, y_test, clf, queries=100, standalone=True):
-
-    # x = x.iloc[:, :].values
-    # y = y.iloc[:].values
-
-    # X_raw, X_test, y_raw, y_test = train_test_split(x, y, test_size=0.3)
 
     x_train = deepcopy(x_train.to_numpy())
     y_train = deepcopy(y_train.to_numpy())

@@ -46,11 +46,11 @@ def main():
 		pred = rakeld_classifier(x_train, x_test, y_train, y_test, clf, standalone=False)
 		results[name].append(calc_scores(y_test, pred, 'RaKEL'))
 		
-		pred = label_powerset(x_train, x_test, y_train, y_test, clf)
+		pred = label_powerset(x_train, x_test, y_train, y_test, clf, standalone=False)
 		results[name].append(calc_scores(y_test, pred, 'Label Powerset'))
 		
-		# pred = classifier_chains(x_train, x_test, y_train, y_test, clf, standalone=False)
-		# results[name].append(calc_scores(y_test, pred, 'Classifier Chains'))
+		pred = classifier_chains(x_train, x_test, y_train, y_test, clf, standalone=False)
+		results[name].append(calc_scores(y_test, pred, 'Classifier Chains'))
 	
 	pretty_print(results)
 
