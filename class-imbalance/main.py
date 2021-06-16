@@ -62,6 +62,7 @@ def main():
 		results[name].append(calc_scores(y_test, pred, 'Cluster Based Sampling'))
 		
 	for r in results:
+		print(f'{"/":-<69}')
 		print(f'Classifier: {r}')
 		print(f'{"Type":<24} {"Accuracy":<10} {"Precision":<10} {"Recall":<10} {"F1":<8} {"ROC/AUC":<8}')
 		for d in results[r]:
@@ -75,6 +76,7 @@ def main():
 					f'{d["roc_auc"]:<8.2f}'
 				)
 			)
+		print(f'\\{"":-<69}')
 
 
 def calc_scores(y_true, y_predicted, method):
