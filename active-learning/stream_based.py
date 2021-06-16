@@ -22,7 +22,8 @@ def stream_based(X_train, x_test, y_train, y_test, clf, standalone=False):
 	)
 	unqueried_score = learner.score(x_pool, y_pool)
 
-	print('Initial prediction accuracy: %f' % unqueried_score)
+	if standalone:
+		print('Initial prediction accuracy: %f' % unqueried_score)
 
 	from modAL.uncertainty import classifier_uncertainty
 
@@ -36,7 +37,8 @@ def stream_based(X_train, x_test, y_train, y_test, clf, standalone=False):
 			learner.teach(x_pool[stream_idx].reshape(1, -1), y_pool[stream_idx].reshape(-1, ))
 			new_score = learner.score(x_pool, y_pool)
 			performance_history.append(new_score)
-			print('row no. %d queried, new accuracy: %f' % (stream_idx, new_score))
+			if standalone:
+				print('row no. %d queried, new accuracy: %f' % (stream_idx, new_score))
 	
 	y_pred = learner.predict(x_test)
 	

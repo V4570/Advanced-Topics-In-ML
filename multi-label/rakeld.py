@@ -17,6 +17,8 @@ def rakeld_classifier(x_train, x_test, y_train, y_test, clf, standalone=False):
     
         print('RakelD: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
         print('RakelD: f1_sampled = %.2f%%' % (f1_s * 100))
+    
+    return yhat
 
 
 def f1_sampled(actual, pred):

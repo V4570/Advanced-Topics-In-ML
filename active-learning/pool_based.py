@@ -49,7 +49,8 @@ def pool_based(x_train, x_test, y_train, y_test, clf, queries=100, standalone=Tr
         y_pool = np.delete(y_pool, query_idx, axis=0)
 
         acc = learner.score(x_train, y_train)
-        print('Accuracy after query {n}: {acc:0.4f}'.format(n=idx + 1, acc=acc))
+        if standalone:
+            print('Accuracy after query {n}: {acc:0.4f}'.format(n=idx + 1, acc=acc))
 
         performance_hist.append(acc)
 
