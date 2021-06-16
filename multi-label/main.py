@@ -7,7 +7,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score, confusion_matrix
 from pathlib import Path
 
-PREPROCESS = True
+PREPROCESS = False
 
 
 def main():

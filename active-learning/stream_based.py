@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from modAL.models import ActiveLearner
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import f1_score, precision_recall_fscore_support, accuracy_score, roc_auc_score, confusion_matrix
+import seaborn as sn
 
 
 def stream_based(X_train, x_test, y_train, y_test, clf, standalone=False):
@@ -30,7 +31,7 @@ def stream_based(X_train, x_test, y_train, y_test, clf, standalone=False):
 	performance_history = [unqueried_score]
 	conf = 0.4
 	# learning until the accuracy reaches a given threshold
-	while learner.score(x_pool, y_pool) < 0.81:
+	while learner.score(x_pool, y_pool) < 0.76:
 		stream_idx = np.random.choice(range(len(x_pool)))
 		
 		if classifier_uncertainty(learner, x_pool[stream_idx].reshape(1, -1)) >= conf:
@@ -65,9 +66,33 @@ def stream_based(X_train, x_test, y_train, y_test, clf, standalone=False):
 		prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='macro')
 		roc_auc = roc_auc_score(y_test, y_pred)
 		
-		print('Query By Committee: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
-		print('Query By Committee: prec = %.2f%%, rec = %.2f%%' % (prec * 100, rec * 100))
+		print('Stream Based: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
+		print('Stream Based: prec = %.2f%%, rec = %.2f%%' % (prec * 100, rec * 100))
 		print(roc_auc)
-		print(confusion_matrix(y_test, y_pred).ravel())
+		conf_matrix = confusion_matrix(y_test, y_pred)
+		labels = np.array([['TN', 'FP'], ['FN', 'TP']])
+		sn.heatmap(conf_matrix, annot=labels, fmt='', cmap='Blues')
+		plt.show()
 	
 	return y_pred
+
+
+def read_preprocessed(filepath):
+	import pandas as pd
+	train_df = pd.read_csv(filepath / 'processed_train.csv')
+	test_df = pd.read_csv(filepath / 'processed_test.csv')
+	
+	# x_train, x_test, y_train, y_test
+	return train_df.drop('target', axis=1), test_df.drop('target', axis=1), train_df['target'], test_df['target']
+
+
+if __name__ == '__main__':
+	from pathlib import Path
+	from sklearn.ensemble import AdaBoostClassifier
+	
+	clf = AdaBoostClassifier()
+	
+	datapath = Path('data')
+	x_train, x_test, y_train, y_test = read_preprocessed(datapath)
+	
+	stream_based(x_train, x_test, y_train, y_test, clf, standalone=True)

@@ -86,5 +86,26 @@ def pool_based(x_train, x_test, y_train, y_test, clf, queries=100, standalone=Tr
 
     return y_pred
 
+
+def read_preprocessed(filepath):
+    import pandas as pd
+    train_df = pd.read_csv(filepath / 'processed_train.csv')
+    test_df = pd.read_csv(filepath / 'processed_test.csv')
+    
+    # x_train, x_test, y_train, y_test
+    return train_df.drop('target', axis=1), test_df.drop('target', axis=1), train_df['target'], test_df['target']
+
+
+if __name__ == '__main__':
+    from pathlib import Path
+    from sklearn.ensemble import AdaBoostClassifier
+    
+    clf = AdaBoostClassifier()
+    
+    datapath = Path('data')
+    x_train, x_test, y_train, y_test = read_preprocessed(datapath)
+    
+    pool_based(x_train, x_test, y_train, y_test, clf, standalone=True)
+
 '''return performance_hist, y_test, y_pred'''
 

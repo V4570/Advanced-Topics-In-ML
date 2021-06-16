@@ -4,6 +4,7 @@ from copy import deepcopy
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from modAL.models import ActiveLearner, Committee
+import seaborn as sn
 
 RANDOM_STATE_SEED = 1
 np.random.seed(RANDOM_STATE_SEED)
@@ -15,13 +16,13 @@ def qbc(x_train, x_test, y_train, y_test, clf, standalone=False):
 	y_pool = deepcopy(y_train.to_numpy())
 	
 	# committee members
-	n_members = 10
+	n_members = 5
 	learner_list = list()
 	
 	# initializing the committee members (learners)
 	for member_idx in range(n_members):
 		# initial training data
-		n_initial = 50
+		n_initial = 25
 		train_idx = np.random.choice(range(x_pool.shape[0]), size=n_initial, replace=False)
 		queryX_train = x_pool[train_idx]
 		queryY_train = y_pool[train_idx]
@@ -86,6 +87,30 @@ def qbc(x_train, x_test, y_train, y_test, clf, standalone=False):
 		print('Query By Committee: f1 = %.2f%%, acc = %.2f%%' % (f1 * 100, acc * 100))
 		print('Query By Committee: prec = %.2f%%, rec = %.2f%%' % (prec * 100, rec * 100))
 		print(roc_auc)
-		print(confusion_matrix(y_test, y_pred).ravel())
+		conf_matrix = confusion_matrix(y_test, y_pred)
+		labels = np.array([['TN', 'FP'], ['FN', 'TP']])
+		sn.heatmap(conf_matrix, annot=labels, fmt='', cmap='Blues')
+		plt.show()
 	
 	return y_pred
+
+
+def read_preprocessed(filepath):
+	import pandas as pd
+	train_df = pd.read_csv(filepath / 'processed_train.csv')
+	test_df = pd.read_csv(filepath / 'processed_test.csv')
+	
+	# x_train, x_test, y_train, y_test
+	return train_df.drop('target', axis=1), test_df.drop('target', axis=1), train_df['target'], test_df['target']
+
+
+if __name__ == '__main__':
+	from pathlib import Path
+	from sklearn.ensemble import AdaBoostClassifier
+	
+	clf = AdaBoostClassifier()
+	
+	datapath = Path('data')
+	x_train, x_test, y_train, y_test = read_preprocessed(datapath)
+	
+	qbc(x_train, x_test, y_train, y_test, clf, standalone=True)
