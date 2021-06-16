@@ -42,7 +42,7 @@ def main():
 		# {'name': 'Logistic Regression', 'clf': log_regression},
 		{'name': 'KNeighbors', 'clf': knn}
 	]
-	
+
 	results = {}
 	for clf_dict in classifiers:
 		name = clf_dict['name']
@@ -100,6 +100,7 @@ def calc_scores(y_true, y_predicted, method):
 		'cf_matrix': cf_matrix
 	}
 	return res
+
 
 
 if __name__ == '__main__':
