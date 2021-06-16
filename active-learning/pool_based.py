@@ -72,7 +72,6 @@ def pool_based(x_train, x_test, y_train, y_test, clf, queries=100, standalone=Tr
         ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=10))
         ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
 
-
         ax.set_title('Incremental Classification Accuracy')
         ax.set_xlabel('Query iteration')
         ax.set_ylabel('Classification Accuracy')

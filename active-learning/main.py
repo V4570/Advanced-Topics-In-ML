@@ -4,6 +4,7 @@ from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score, confusion_matrix
 from pool_based import pool_based
+from stream_based import stream_based
 from pathlib import Path
 from modAL.uncertainty import uncertainty_sampling, margin_sampling, entropy_sampling
 import pandas as pd
@@ -18,7 +19,7 @@ def read_preprocessed(filepath):
 
 
 def main():
-	datapath = Path(".")
+	datapath = Path("data")
 	
 	x_train, x_test, y_train, y_test = read_preprocessed(datapath)
 	
@@ -47,11 +48,14 @@ def main():
 		clf = clf_dict['clf']
 		results[name] = []
 		
-		# pred = qbc(x_train_resampled, x_test, y_train_resampled, y_test, clf, standalone=False)
-		# results[name].append(calc_scores(y_test, pred, 'Query By Committee'))
+		pred = qbc(x_train_resampled, x_test, y_train_resampled, y_test, clf, standalone=False)
+		results[name].append(calc_scores(y_test, pred, 'Query By Committee'))
 
-		pred_pool = pool_based(x_train_resampled, x_test, y_train_resampled, y_test, clf, standalone=True)
+		pred_pool = pool_based(x_train_resampled, x_test, y_train_resampled, y_test, clf, standalone=False)
 		results[name].append(calc_scores(y_test, pred_pool, 'Pool Based'))
+		
+		pred_stream = stream_based(x_train_resampled, x_test, y_train_resampled, y_test, clf, standalone=False)
+		results[name].append(calc_scores(y_test, pred_stream, 'Stream Based'))
 
 		pretty_print(results)
 

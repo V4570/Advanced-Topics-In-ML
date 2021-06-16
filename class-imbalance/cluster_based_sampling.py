@@ -1,11 +1,13 @@
 from sklearn.cluster import KMeans
 from imblearn.over_sampling import KMeansSMOTE
-from sklearn.metrics import f1_score, precision_recall_curve, precision_recall_fscore_support, auc, silhouette_score
+from sklearn.metrics import f1_score, precision_recall_curve, \
+	precision_recall_fscore_support, auc, silhouette_score, plot_confusion_matrix, roc_curve, roc_auc_score
 import numpy as np
 from matplotlib import pyplot as plt
 
+
 TESTING = False
-PLOTTING = False
+PLOTTING = True
 
 
 def cbs(x_train, x_test, y_train, y_test, classifier, standalone=False):
@@ -85,6 +87,24 @@ def cbs(x_train, x_test, y_train, y_test, classifier, standalone=False):
 		plt.legend()
 		plt.title("Precision-Recall Curve")
 		plt.show()
+		
+		ns_probs = [0 for _ in range(len(y_test))]
+		# calculate roc curves
+		ns_fpr, ns_tpr, _ = roc_curve(y_test, ns_probs)
+		lr_fpr, lr_tpr, _ = roc_curve(y_test, lr_probs)
+		# plot the roc curve for the model
+		plt.plot(ns_fpr, ns_tpr, linestyle='--', label='No Skill')
+		plt.plot(lr_fpr, lr_tpr, marker='.', label='Logistic')
+		# axis labels
+		plt.xlabel('False Positive Rate')
+		plt.ylabel('True Positive Rate')
+		# show the legend
+		plt.legend()
+		# show the plot
+		plt.show()
+		
+		plot_confusion_matrix(clf, x_test, y_test)
+		plt.show()
 	
 	return y_pred
 
@@ -117,3 +137,16 @@ def elbow(x, y):
 	plt.xlabel("Number of Clusters")
 	plt.ylabel("Silhouette score")
 	plt.show()
+
+
+if __name__ == '__main__':
+	from data_preprocessing import read_preprocessed
+	from pathlib import Path
+	from sklearn.ensemble import AdaBoostClassifier
+	
+	clf = AdaBoostClassifier()
+	
+	datapath = Path('data')
+	x_train, x_test, y_train, y_test = read_preprocessed(datapath)
+	
+	cbs(x_train, x_test, y_train, y_test, clf, standalone=True)
