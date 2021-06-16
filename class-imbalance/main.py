@@ -7,15 +7,15 @@ from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import LinearSVC
-from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score
+from sklearn.metrics import accuracy_score, precision_recall_fscore_support, roc_auc_score, confusion_matrix
 from pathlib import Path
 
-PREPROCESS = False
+PREPROCESS = True
 
 
 def main():
 	datapath = Path("data")
-	test_size = 0.2
+	test_size = 0.3
 	
 	if PREPROCESS:
 		x_train, x_test, y_train, y_test = preprocess_data(datapath / "aug_train.csv", test_size)
@@ -76,6 +76,7 @@ def main():
 					f'{d["roc_auc"]:<8.2f}'
 				)
 			)
+			print(d['cf_matrix'])
 		print(f'\\{"":-<69}')
 
 
@@ -83,6 +84,7 @@ def calc_scores(y_true, y_predicted, method):
 	acc = accuracy_score(y_true, y_predicted)
 	pr, rec, f1, _ = precision_recall_fscore_support(y_true, y_predicted, average='macro')
 	roc_auc = roc_auc_score(y_true, y_predicted)
+	cf_matrix = confusion_matrix(y_true, y_predicted)
 	
 	res = {
 		'method': method,
@@ -90,7 +92,8 @@ def calc_scores(y_true, y_predicted, method):
 		'precision': pr,
 		'recall': rec,
 		'f1': f1,
-		'roc_auc': roc_auc
+		'roc_auc': roc_auc,
+		'cf_matrix': cf_matrix
 	}
 	return res
 
