@@ -39,7 +39,6 @@ def main():
 		{'name': 'Linear SVM/SVC', 'clf': svm},
 		{'name': 'Decision Tree', 'clf': decision_tree},
 		{'name': 'Random Forest', 'clf': random_forest},
-		# {'name': 'Logistic Regression', 'clf': log_regression},
 		{'name': 'KNeighbors', 'clf': knn}
 	]
 
@@ -100,7 +99,6 @@ def calc_scores(y_true, y_predicted, method):
 		'cf_matrix': cf_matrix
 	}
 	return res
-
 
 
 if __name__ == '__main__':

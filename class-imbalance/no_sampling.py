@@ -44,3 +44,16 @@ def only_majority_class(x_train, x_test, y_train, y_test, classifier):
 	# calculate scores
 	prec, rec, f1, _ = precision_recall_fscore_support(y_test, y_pred, average='micro')
 	print('Only majority: f1 = %.2f%%' % (f1 * 100))
+	
+
+if __name__ == '__main__':
+	from data_preprocessing import read_preprocessed
+	from pathlib import Path
+	from sklearn.ensemble import AdaBoostClassifier
+	
+	clf = AdaBoostClassifier()
+	
+	datapath = Path('data')
+	x_train, x_test, y_train, y_test = read_preprocessed(datapath)
+	
+	no_sampling(x_train, x_test, y_train, y_test, clf, standalone=True)

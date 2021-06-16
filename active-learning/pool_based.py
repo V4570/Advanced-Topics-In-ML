@@ -49,7 +49,8 @@ def pool_based(x_train, x_test, y_train, y_test, clf, queries=100, standalone=Tr
         y_pool = np.delete(y_pool, query_idx, axis=0)
 
         acc = learner.score(x_train, y_train)
-        print('Accuracy after query {n}: {acc:0.4f}'.format(n=idx + 1, acc=acc))
+        if standalone:
+            print('Accuracy after query {n}: {acc:0.4f}'.format(n=idx + 1, acc=acc))
 
         performance_hist.append(acc)
 
@@ -72,7 +73,6 @@ def pool_based(x_train, x_test, y_train, y_test, clf, queries=100, standalone=Tr
         ax.yaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=10))
         ax.yaxis.set_major_formatter(matplotlib.ticker.PercentFormatter(xmax=1))
 
-
         ax.set_title('Incremental Classification Accuracy')
         ax.set_xlabel('Query iteration')
         ax.set_ylabel('Classification Accuracy')
@@ -85,6 +85,27 @@ def pool_based(x_train, x_test, y_train, y_test, clf, queries=100, standalone=Tr
         plt.show()
 
     return y_pred
+
+
+def read_preprocessed(filepath):
+    import pandas as pd
+    train_df = pd.read_csv(filepath / 'processed_train.csv')
+    test_df = pd.read_csv(filepath / 'processed_test.csv')
+    
+    # x_train, x_test, y_train, y_test
+    return train_df.drop('target', axis=1), test_df.drop('target', axis=1), train_df['target'], test_df['target']
+
+
+if __name__ == '__main__':
+    from pathlib import Path
+    from sklearn.ensemble import AdaBoostClassifier
+    
+    clf = AdaBoostClassifier()
+    
+    datapath = Path('data')
+    x_train, x_test, y_train, y_test = read_preprocessed(datapath)
+    
+    pool_based(x_train, x_test, y_train, y_test, clf, standalone=True)
 
 '''return performance_hist, y_test, y_pred'''
 
