@@ -1,12 +1,8 @@
-from data_preprocessing import read_preprocessed
-from sklearn.model_selection import train_test_split
 from imblearn.combine import SMOTETomek
-from sklearn.ensemble import AdaBoostClassifier
 from sklearn.metrics import precision_recall_curve, auc, f1_score
 from sklearn.metrics import precision_recall_fscore_support
 from matplotlib import pyplot
 from sklearn.decomposition import PCA
-from numpy import where
 import numpy as np
 
 
@@ -20,6 +16,7 @@ def smote_tomek(x_train, x_test, y_train, y_test, classifier, standalone=False):
     classifier.fit(X_resampled, y_resampled)
     # predicting
     y_predicted = classifier.predict(x_test)
+    '''
     
     # plot for SMOTE & Tomek Links
     # dropping into 2dim
@@ -32,13 +29,9 @@ def smote_tomek(x_train, x_test, y_train, y_test, classifier, standalone=False):
 
     f, (ax1, ax2) = pyplot.subplots(1, 2)
     A = X_vis[y_train == 0, 0]
-    print(np.shape(A))
     B = X_vis[y_train == 0, 1]
-    print(np.shape(B))
     C = X_vis[y_train == 1, 0]
-    print(np.shape(C))
     D = X_vis[y_train == 1, 1]
-    print(np.shape(D))
     c0 = ax1.scatter(A[:200], B[:200], label="Not looking for job change",
                       alpha=0.5)
     c1 = ax1.scatter(C[:66], D[:66], label="Looking for a job change",
@@ -47,13 +40,9 @@ def smote_tomek(x_train, x_test, y_train, y_test, classifier, standalone=False):
     #
     # plotting SMOTE & Tomek Links
     A_r = X_res_vis[y_resampled == 0, 0]
-    print(np.shape(A_r))
     B_r = X_res_vis[y_resampled == 0, 1]
-    print(np.shape(B_r))
     C_r = X_res_vis[y_resampled == 1, 0]
-    print(np.shape(C_r))
     D_r = X_res_vis[y_resampled == 1, 1]
-    print(np.shape(D_r))
     ax2.scatter(A_r[:200], B_r[:200],
                  label="Not looking for job change", alpha=0.5)
     ax2.scatter(C_r[:200], D_r[:200],
@@ -74,7 +63,7 @@ def smote_tomek(x_train, x_test, y_train, y_test, classifier, standalone=False):
     pyplot.figlegend((c0, c1), ('Not looking for job change', 'Looking for a job change'), loc='lower center', ncol=2, labelspacing=0.)
     pyplot.tight_layout(pad=3)
     pyplot.show()
-    
+    '''
     if standalone:
         # calculate scores
         lr_probs = classifier.predict_proba(x_test)
@@ -96,3 +85,55 @@ def smote_tomek(x_train, x_test, y_train, y_test, classifier, standalone=False):
         pyplot.show()
 
     return y_predicted
+
+
+def create_graph(x_train, y_train):
+    # plot for SMOTE & Tomek Links
+    # dropping into 2dim
+    sm = SMOTETomek(random_state=42, sampling_strategy='minority')
+    X_resampled, y_resampled = sm.fit_resample(x_train, y_train)
+    pca = PCA(n_components=2)
+    X_vis = pca.fit_transform(x_train)
+    X_res, y_res = sm.fit_resample(x_train, y_train)
+    X_res_vis = pca.transform(X_res)
+    #
+    # plotting original set
+
+    f, (ax1, ax2) = pyplot.subplots(1, 2)
+    A = X_vis[y_train == 0, 0]
+    B = X_vis[y_train == 0, 1]
+    C = X_vis[y_train == 1, 0]
+    D = X_vis[y_train == 1, 1]
+    c0 = ax1.scatter(A[:200], B[:200], label="Not looking for job change",
+                     alpha=0.5)
+    c1 = ax1.scatter(C[:66], D[:66], label="Looking for a job change",
+                     alpha=0.5)
+    ax1.set_title('Original set')
+    #
+    # plotting SMOTE & Tomek Links
+    A_r = X_res_vis[y_resampled == 0, 0]
+    B_r = X_res_vis[y_resampled == 0, 1]
+    C_r = X_res_vis[y_resampled == 1, 0]
+    D_r = X_res_vis[y_resampled == 1, 1]
+    ax2.scatter(A_r[:200], B_r[:200],
+                label="Not looking for job change", alpha=0.5)
+    ax2.scatter(C_r[:200], D_r[:200],
+                label="Looking for a job change", alpha=0.5)
+    ax2.set_title('SMOTE & Tomek Links')
+    #
+    # # shape plotting
+    for ax in (ax1, ax2):
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.get_xaxis().tick_bottom()
+        ax.get_yaxis().tick_left()
+        ax.spines['left'].set_position(('outward', 10))
+        ax.spines['bottom'].set_position(('outward', 10))
+        ax.set_xlim([-50, 50])
+        ax.set_ylim([-1, 1])
+
+    pyplot.figlegend((c0, c1), ('Not looking for job change', 'Looking for a job change'), loc='lower center', ncol=2,
+                     labelspacing=0.)
+    pyplot.tight_layout(pad=3)
+    pyplot.show()
+    pyplot.savefig('vis.png')

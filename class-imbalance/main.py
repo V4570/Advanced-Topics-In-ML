@@ -1,6 +1,6 @@
 from data_preprocessing import preprocess_data, read_preprocessed
 from easy_ensemble import easy_ensemble
-from smote_tomek import smote_tomek
+from smote_tomek import smote_tomek, create_graph
 from no_sampling import no_sampling, only_majority_class
 from cluster_based_sampling import cbs
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
@@ -42,7 +42,7 @@ def main():
 		# {'name': 'Logistic Regression', 'clf': log_regression},
 		{'name': 'KNeighbors', 'clf': knn}
 	]
-	
+
 	results = {}
 	for clf_dict in classifiers:
 		name = clf_dict['name']
@@ -91,6 +91,7 @@ def calc_scores(y_true, y_predicted, method):
 		'roc_auc': roc_auc
 	}
 	return res
+
 
 
 if __name__ == '__main__':
